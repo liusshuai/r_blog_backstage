@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Menu from '@/components/menu';
 import LazyLoad from '@/components/LazyLoad';
+import { initRouter } from '@/util/util';
 import './index.less';
 
 const AddArticlePage = LazyLoad(() => import('@/views/addArticle'));
@@ -28,14 +29,14 @@ class Layout extends React.Component {
             </div>
             <div className="main">
                 <Switch>
-                    <Route exact path="/admin" component={BibiPage}></Route>
-                    <Route path="/admin/source" component={SourcePage}></Route>
-                    <Route path="/admin/addSource" component={AddSourcePage}></Route>
-                    <Route path="/admin/follow" component={FollowPage}></Route>
-                    <Route path="/admin/board" component={BoardPage}></Route>
-                    <Route path="/admin/article" component={OnlineArticlePage}></Route>
-                    <Route path="/admin/draft" component={DraftArticlePage}></Route>
-                    <Route path="/admin/edit" component={AddArticlePage}></Route>
+                    <Route exact path={initRouter()} component={BibiPage}></Route>
+                    <Route path={initRouter('/source')} component={SourcePage}></Route>
+                    <Route path={initRouter('/addSource')} component={AddSourcePage}></Route>
+                    <Route path={initRouter('/follow')} component={FollowPage}></Route>
+                    <Route path={initRouter('/board')} component={BoardPage}></Route>
+                    <Route path={initRouter('/article')} component={OnlineArticlePage}></Route>
+                    <Route path={initRouter('/draft')} component={DraftArticlePage}></Route>
+                    <Route path={initRouter('/edit')} component={AddArticlePage}></Route>
                 </Switch>
             </div>
         </div>

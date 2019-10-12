@@ -13,3 +13,7 @@ export function parseUrl(search) {
 
     return params;
 }
+
+export function initRouter(path = '/') {
+    return process.env.NODE_ENV === 'production' ? `/admin${path}` : path;
+}

@@ -93,7 +93,7 @@ const messBoxFunc = (props) => {
                     <pre>引用 {item.replyname} 的发言</pre>
                     {item.replycontent}
                 </blockquote> : null }
-                <p>{item.content}</p>
+                <pre className="content_text">{item.content}</pre>
             </div>
         </li>) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无评论" /> }
 

@@ -8,15 +8,15 @@ import {
     Route
 } from 'react-router-dom';
 import { isLogin } from '@/api/admin';
-import './assets/style/init.css';
+import { initRouter } from '@/util/util';
 
 class App extends React.Component {
 
     componentDidMount() {
-        if (location.pathname === '/admin/login') return;
+        if (location.pathname === '/login') return;
         isLogin().then(res => {
             if (res.code === 301) {
-                location.href = '/admin/login';
+                location.href = '/login';
             }
         });
     }
@@ -24,9 +24,9 @@ class App extends React.Component {
     render () {
         return (<BrowserRouter>
             <Switch>
-                <Route exact path="/admin" component={Layout} />
-                <Route path='/admin/login' component={Login} />
-                <Route path='/admin/*' component={Layout} />
+                <Route exact path={initRouter()} component={Layout} />
+                <Route path={initRouter('/login')} component={Login} />
+                <Route path={initRouter('/*')} component={Layout} />
             </Switch>
         </BrowserRouter>   
         // <Layout />

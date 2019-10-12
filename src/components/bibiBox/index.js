@@ -44,9 +44,9 @@ const bibiBoxFunc = (props) => {
         { data.imgs && data.imgs[0] ? <div className="bibi_item_image">
             <img src={data.imgs[0].src} />
         </div> : null }
-        <p className="content">
+        <pre className="content">
             {data.content}
-        </p>
+        </pre>
         <div className="bibi_item_tags">
             { data.fromw && JSON.parse(data.fromw).map(tag => <span key={tag}>● {tag}</span>) }
         </div>

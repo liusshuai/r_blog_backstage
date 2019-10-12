@@ -272,6 +272,7 @@ class AddSourcePage extends React.Component{
                         <Form.Item>
                             <BraftEditor style={{border: '1px solid #eee',
                                 width: '853px', margin: '0 auto'}}
+                                id="markdown_content"
                                 media={mediaParams} ref="editor"
                                 excludeControls={['emoji']} />
                         </Form.Item>
