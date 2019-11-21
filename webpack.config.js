@@ -9,8 +9,8 @@ module.exports = {
         path: path.resolve(__dirname, 'admin'),
         filename: '[name].[hash].js',
         chunkFilename: '[name].[hash].js',
-        // publicPath: process.env.NODE_ENV === 'production' ? './' : '/'
-        publicPath: './'
+        publicPath: process.env.NODE_ENV === 'production' ? './' : '/'
+        // publicPath: './'
     },
     resolve: {
         alias: {
@@ -83,10 +83,10 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         inline: true,
-        port: '8080',
+        port: '8082',
         proxy: {
             '/api': {
-                target: 'http://localhost:3002',
+                target: 'http://localhost:8081',
                 changeOrigin: true,
                 secure: false
             }

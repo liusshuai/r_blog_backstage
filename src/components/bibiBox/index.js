@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import DeleteConfirm from '@/components/deleteConfirm';
 import MessBox from '@/components/messBox';
-import { Modal, Pagination } from 'antd';
+import { Modal, Pagination, message } from 'antd';
 import { getCommentByBibi } from '@/api/comment';
+import { changeShowType } from '@/api/tweet';
 import './index.less';
 
 const bibiBoxFunc = (props) => {
@@ -11,10 +12,11 @@ const bibiBoxFunc = (props) => {
     const [page, setPage] = useState(1);
     const [comments, setComments] = useState([]);
     const [total, setTotal] = useState(0);
-
-    // useEffect(() => {
-    //     console.log(data.id);
-    // }, []);
+    const [show, setShow] = useState(true);
+ 
+    useEffect(() => {
+        setShow(data.show);
+    }, []);
 
     const openMess = () => {
         !comments.length && getComments();
@@ -39,6 +41,24 @@ const bibiBoxFunc = (props) => {
         getComments(page);
     }
 
+    const openMessww = () => {
+        message.error('123');
+    }
+
+    const changeTweetShowType = (showType) => {
+        changeShowType({
+            id: data.id,
+            show: showType
+        }).then(res => {
+            if (res.code === 200) {
+                setShow(showType);
+                message.success('修改成功');
+            } else {
+                message.error(res.msg);
+            }
+        });
+    }
+
 
     return <div className="bibi_item_content">
         { data.imgs && data.imgs[0] ? <div className="bibi_item_image">
@@ -53,11 +73,15 @@ const bibiBoxFunc = (props) => {
         <div className="bibi_item_info">
             <span>发布于 {data.pubtime}</span>
             <span>|</span>
-            <span>热度({data.likenum})</span>
+            <span onClick={openMessww}>热度({data.likenum})</span>
             <span>|</span>
             <span onClick={openMess}>评论({data.comments})</span>
             <span>|</span>
             <DeleteConfirm onConfirm={() => props.deleteBibi(data.id)}>删除</DeleteConfirm>
+            {
+                show ? <span onClick={() => changeTweetShowType(0)}>设为仅自己可看</span>
+                    : <span onClick={() => changeTweetShowType(1)}>公开</span>
+            }
         </div>
 
 

@@ -13,10 +13,11 @@ import { initRouter } from '@/util/util';
 class App extends React.Component {
 
     componentDidMount() {
-        if (location.pathname === '/login') return;
+        const path = initRouter('/login');
+        if (location.pathname === path) return;
         isLogin().then(res => {
             if (res.code === 301) {
-                location.href = '/login';
+                location.href = path;
             }
         });
     }
