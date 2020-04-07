@@ -8,7 +8,9 @@ import {
     Tooltip,
     Modal,
     message,
-    Spin
+    Spin,
+    Tabs,
+    Upload
 } from 'antd';
 import BraftEditor from 'braft-editor';
 import {
@@ -24,6 +26,8 @@ import 'braft-editor/dist/index.css';
 import './index.less';
 const { Option } = Select;
 const TextArea = Input.TextArea;
+const TabPane = Tabs.TabPane;
+const InputGroup = Input.Group;
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -58,6 +62,7 @@ class AddSourcePage extends React.Component{
 
         this.addChannelOk = this.addChannelOk.bind(this);
         this.setNewChannelName = this.setNewChannelName.bind(this);
+        this.coverUpload = this.coverUpload.bind(this);
     }
 
     componentDidMount() {
@@ -84,7 +89,10 @@ class AddSourcePage extends React.Component{
                     title: data.title,
                     channel: data.channel.id,
                     desc: data.desc,
-                    tags: JSON.parse(data.tags)
+                    tags: JSON.parse(data.tags),
+                    outurl: data.outurl,
+                    coverpos: data.coverpos || 0,
+                    cover: data.cover || ''
                 });
 
                 const editorState = BraftEditor.createEditorState(data.content);
@@ -184,7 +192,7 @@ class AddSourcePage extends React.Component{
                 message.error(_p_text[key]);
                 return false;
             }
-            if (key === 'content' && params[key] === '<p></p>') {
+            if (key === 'content' && params[key] === '<p></p>' && !params.outurl) {
                 message.error(_p_text[key]);
                 return false;
             }
@@ -221,6 +229,21 @@ class AddSourcePage extends React.Component{
             this.props.router.push('/admin/article');
         } else {
             this.props.router.push('/admin/draft');
+        }
+    }
+
+    coverUpload(info) {
+        const { status, response } = info.file;
+        if (status === 'done') {
+            if (response.success) {
+                this.props.form.setFieldsValue({
+                    cover: response.data.url
+                });
+            } else {
+                message.error(response.msg);
+            }
+        } else if (status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
         }
     }
 
@@ -266,15 +289,47 @@ class AddSourcePage extends React.Component{
                                 <Select mode="tags"></Select>
                             )}
                         </Form.Item>
+                        <Form.Item label="封面">
+                            <InputGroup compact style={{display: 'flex', alignItems: 'center'}}>
+                                <Form.Item style={{marginBottom: 0}}>
+                                    {getFieldDecorator('coverpos', {initialValue: 0})(
+                                        <Select style={{width: 120}}>
+                                            <Option value={0}>Top</Option>
+                                            <Option value={1}>Left</Option>
+                                            <Option value={2}>Right</Option>
+                                        </Select>
+                                    )}
+                                </Form.Item>
+                                <Form.Item style={{marginBottom: 0}}>
+                                    {getFieldDecorator('cover')(<Input style={{width: 500}} />)}
+                                </Form.Item>
+                                <Upload name="file"
+                                    showUploadList={false}
+                                    onChange={this.coverUpload}
+                                    action="/api/upload/upload?type=article">
+                                    <Button type="primary">上传</Button>
+                                </Upload>
+                            </InputGroup>
+                        </Form.Item>
                         <Form.Item label="简介">
                             {getFieldDecorator('desc')(<TextArea />)}
                         </Form.Item>
                         <Form.Item>
-                            <BraftEditor style={{border: '1px solid #eee',
-                                width: '853px', margin: '0 auto'}}
-                                id="markdown_content"
-                                media={mediaParams} ref="editor"
-                                excludeControls={['emoji']} />
+                            <Tabs style={{width: '853px'}} type="card">
+                                <TabPane tab="编辑器" key="editor">
+                                    <BraftEditor style={{border: '1px solid #eee',
+                                        width: '853px', margin: '0 auto'}}
+                                        id="markdown_content"
+                                        media={mediaParams} ref="editor"
+                                        excludeControls={['emoji']} />
+                                </TabPane>
+                                <TabPane tab="外部链接" key="outurl">
+                                    <Form.Item label="链接">
+                                        {getFieldDecorator('outurl')(
+                                            <Input placeholder="外链不为空则编辑器内容将被忽略" />)}
+                                    </Form.Item>
+                                </TabPane>
+                            </Tabs>
                         </Form.Item>
                         <Form.Item
                             wrapperCol={{ span: 24 }}>
